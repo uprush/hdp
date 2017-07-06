@@ -9,12 +9,12 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="hortonworks.hdp.refapp.trucking.simulator.impl.collectors" level="debug">
+    <Logger name="hortonworks.hdp.refapp.trucking.simulator.impl.collectors" level="info">
     	<AppenderRef ref="CONSOLE"/>
       	<AppenderRef ref="ROLLING"/>
     </Logger>
     
-    <Logger name="hortonworks.hdp.refapp.trucking.simulator.schemaregistry" level="debug">
+    <Logger name="hortonworks.hdp.refapp.trucking.simulator.schemaregistry" level="info">
                   
     
     	<AppenderRef ref="CONSOLE"/>

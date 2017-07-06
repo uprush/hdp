@@ -25,10 +25,14 @@ public class SimulationRegistrySerializerRunnerApp {
 				String argForCollector = args[6];
 				String schemaRegistryUrl = args [7];
 				String eventSourceString = args[8];
-				EventSourceType eventSource = EventSourceType.valueOf(eventSourceString);	
-				String securityTypeStrig = args[9];
-				SecurityType securityType = SecurityType.valueOf(securityTypeStrig);
-							
+				EventSourceType eventSource = EventSourceType.valueOf(eventSourceString);
+
+				SecurityType securityType = null;
+				if (args.length > 9) {
+					String securityTypeStrig = args[9];
+					securityType = SecurityType.valueOf(securityTypeStrig);
+				}
+
 				
 				TruckConfiguration.initialize(routesDirectory);
 				final int numberOfEventEmitters=TruckConfiguration.freeRoutePool.size();
@@ -38,8 +42,15 @@ public class SimulationRegistrySerializerRunnerApp {
 				
 				final ActorRef listener = system.actorOf(
 						Props.create(SimulatorListener.class), "listener");
-				final ActorRef eventCollector = system.actorOf(
-						Props.create(eventCollectorClass, argForCollector, eventSource, schemaRegistryUrl, securityType), "eventCollector");
+
+				final ActorRef eventCollector;
+				if (securityType == null) {
+					eventCollector = system.actorOf(
+							Props.create(eventCollectorClass, argForCollector, eventSource, schemaRegistryUrl), "eventCollector");
+				} else {
+					eventCollector = system.actorOf(
+							Props.create(eventCollectorClass, argForCollector, eventSource, schemaRegistryUrl, securityType), "eventCollector");
+				}
 				System.out.println(eventCollector.path());
 				
 				

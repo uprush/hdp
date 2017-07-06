@@ -82,9 +82,13 @@ The simulator has a number of different runners based on the type of output you 
 * Command:
 
 
-``` 
+```
+cd trucking-data-simulator
+DATA_LOADER_HOME=$PWD/src/main/resources
+REST_URL_TO_SCHEMA_REGISTRY=http://apac0.field.hortonworks.com:7788/api/v1
+
 nohup java -cp \
-data-loader-jar-with-dependencies.jar \
+target/stream-simulator-jar-with-dependencies.jar \
 hortonworks.hdp.refapp.trucking.simulator.SimulationRegistrySerializerRunnerApp \
 20000 \
 hortonworks.hdp.refapp.trucking.simulator.impl.domain.transport.Truck \
@@ -94,7 +98,7 @@ $DATA_LOADER_HOME/routes/midwest/ \
 10000 \
 /tmp/truck-sensor-data/all-streams-with-schemaid-embedded.txt \
 $REST_URL_TO_SCHEMA_REGISTRY \
-ALL_STREAMS & 
+ALL_STREAMS &
 
 
 ``` 
@@ -119,9 +123,13 @@ ALL_STREAMS &
 * Command:
 
 
-``` 
+```
+cd trucking-data-simulator
+DATA_LOADER_HOME=$PWD/src/main/resources
+REST_URL_TO_SCHEMA_REGISTRY=http://apac0.field.hortonworks.com:7788/api/v1
+
 nohup java -cp \
-data-loader-jar-with-dependencies.jar \
+target/stream-simulator-jar-with-dependencies.jar \
 hortonworks.hdp.refapp.trucking.simulator.SimulationRunnerApp \
 20000 \
 hortonworks.hdp.refapp.trucking.simulator.impl.domain.transport.Truck \
@@ -160,9 +168,13 @@ ALL_STREAMS &
 
 
 
-``` 
+```
+cd trucking-data-simulator
+DATA_LOADER_HOME=$PWD/src/main/resources
+REST_URL_TO_SCHEMA_REGISTRY=http://apac0.field.hortonworks.com:7788/api/v1
+
 nohup java -cp \
-data-loader-jar-with-dependencies.jar \
+target/stream-simulator-jar-with-dependencies.jar \
 hortonworks.hdp.refapp.trucking.simulator.SimulationRegistrySerializerRunnerApp \
 20000 \
 hortonworks.hdp.refapp.trucking.simulator.impl.domain.transport.Truck \
@@ -193,9 +205,38 @@ ALL_STREAMS &
 ^@^@^@^A^@.2017-05-01 13:13:17.119"truck_speed_eventL^X^PJoe Witt^B,Saint Louis to Memphis¦^A^A^@^@^@^@^@^@^@   ^@^@^@^A^@
 ``` 
 
+#### Example 4: Generate Trucking Events Serialized by HWX Schema Registry, send to Kafka
 
 
 
 
+```
+cd trucking-data-simulator
+DATA_LOADER_HOME=$PWD/src/main/resources
+REST_URL_TO_SCHEMA_REGISTRY=http://apac0.field.hortonworks.com:7788/api/v1
+
+nohup java -cp \
+target/stream-simulator-jar-with-dependencies.jar \
+hortonworks.hdp.refapp.trucking.simulator.SimulationRegistrySerializerRunnerApp \
+20000 \
+hortonworks.hdp.refapp.trucking.simulator.impl.domain.transport.Truck \
+hortonworks.hdp.refapp.trucking.simulator.impl.collectors.KafkaEventSerializedWithRegistryCollector \
+1 \
+$DATA_LOADER_HOME/routes/midwest/ \
+10000 \
+apac-shared1:6667,apac-shared2:6667 \
+$REST_URL_TO_SCHEMA_REGISTRY \
+ALL_STREAMS \
+NONSECURE &
+
+
+```
+
+* Details
+	* Each Truck (13 trucks total) will generate 20000 events.
+	* Each event is serialized into Avro using the HWX Schema Registry
+	* Each truck will wait 10 seconds before its route is finished before going on the road again.
+	* Truck geo events will be streamed into the following topic: raw-truck_events_avro
+	* Truck speed events will be streamed into the following topic: raw-truck_speed_events_avro
 
 
